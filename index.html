@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PDF-Links</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <script>
         async function loadFiles() {
             const repo = "v-miladinovic/v-miladinovic.github.io";
@@ -11,19 +12,33 @@
 
             const response = await fetch(apiUrl);
             const files = await response.json();
-
             const list = document.getElementById("file-list");
             list.innerHTML = ""; // Liste leeren
 
             files.forEach(file => {
                 if (file.name.endsWith(".pdf")) {
+                    const pdfUrl = `https://v-miladinovic.github.io/${file.name}`;
+                    
+                    const listItem = document.createElement("div");
+                    listItem.className = "flex justify-between items-center bg-gray-100 dark:bg-gray-800 p-4 rounded-lg shadow-md mb-3";
+
                     const link = document.createElement("a");
-                    link.href = `https://v-miladinovic.github.io/${file.name}`;
+                    link.href = pdfUrl;
                     link.textContent = file.name;
+                    link.className = "text-blue-500 dark:text-blue-400 hover:underline";
                     link.target = "_blank";
 
-                    const listItem = document.createElement("li");
+                    const copyButton = document.createElement("button");
+                    copyButton.textContent = "📋 Kopieren";
+                    copyButton.className = "bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded";
+                    copyButton.onclick = () => {
+                        navigator.clipboard.writeText(pdfUrl);
+                        copyButton.textContent = "✅ Kopiert!";
+                        setTimeout(() => copyButton.textContent = "📋 Kopieren", 2000);
+                    };
+
                     listItem.appendChild(link);
+                    listItem.appendChild(copyButton);
                     list.appendChild(listItem);
                 }
             });
@@ -32,10 +47,12 @@
         window.onload = loadFiles;
     </script>
 </head>
-<body>
-    <h1>Hochgeladene PDFs</h1>
-    <ul id="file-list">
-        <li>Lade Dateien...</li>
-    </ul>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 p-6">
+    <div class="max-w-2xl mx-auto">
+        <h1 class="text-3xl font-bold text-center mb-6">📂 Hochgeladene PDFs</h1>
+        <div id="file-list" class="space-y-3">
+            <p class="text-center">🔄 Lade Dateien...</p>
+        </div>
+    </div>
 </body>
 </html>
