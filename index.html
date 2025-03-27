@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF-Links</title>
+    <script>
+        async function loadFiles() {
+            const repo = "v-miladinovic/v-miladinovic.github.io";
+            const apiUrl = `https://api.github.com/repos/${repo}/contents/`;
+
+            const response = await fetch(apiUrl);
+            const files = await response.json();
+
+            const list = document.getElementById("file-list");
+            list.innerHTML = ""; // Liste leeren
+
+            files.forEach(file => {
+                if (file.name.endsWith(".pdf")) {
+                    const link = document.createElement("a");
+                    link.href = `https://v-miladinovic.github.io/${file.name}`;
+                    link.textContent = file.name;
+                    link.target = "_blank";
+
+                    const listItem = document.createElement("li");
+                    listItem.appendChild(link);
+                    list.appendChild(listItem);
+                }
+            });
+        }
+
+        window.onload = loadFiles;
+    </script>
+</head>
+<body>
+    <h1>Hochgeladene PDFs</h1>
+    <ul id="file-list">
+        <li>Lade Dateien...</li>
+    </ul>
+</body>
+</html>
